@@ -3,19 +3,37 @@ import sys
 
 import main
 
-arrayRoadTypes = ['CARRERA','CRA','KRA','KR','CR','CALLE','CLL','CL','CT','CARRETERA','CQ','CIRCULAR','CIR','CV','CIRCUNVALAR','CRV','CC','CUENTASCORRIDAS','AU','AUT','AUTOPISTA','AV','AVENIDA','AC','AVENIDACALLE','AVENIDACLL','AVENIDAC','AVENIDACL','AK','AVENIDACARRERA','AVENIDACRA','AVENIDAKRA','AVENIDAKR','AVENIDACR','AVENIDAK','BL','BULEVAR','DG','DIAGONAL','DIAG','PJ','PASAJE','PS','PASEO','PT','PEATONAL','TV','TRANSVERSAL','TRANS','TR','TC','TRONCAL','VT','VARIANTE','VI','VIA']
-arrayNumeralV = ['Nro.', 'No.', '#', 'N°', 'N.°', 'n°', 'n.°', 'Numero', 'numero', 'Numeral','numeral']
+arrayRoadTypes = ['CARRERA', 'CRA', 'KRA', 'KR', 'CR', 'CALLE', 'CLL', 'CL', 'CT', 'CARRETERA', 'CQ', 'CIRCULAR', 'CIR', 'CV', 'CIRCUNVALAR', 'CRV', 'CC', 'CUENTASCORRIDAS', 'AU', 'AUT', 'AUTOPISTA', 'AV', 'AVENIDA', 'AC', 'AVENIDACALLE', 'AVENIDACLL', 'AVENIDAC', 'AVENIDACL', 'AVCALLE', 'AVCALLE', 'AVCLL', 'AVCL', 'AK', 'AVENIDACARRERA', 'AVENIDACRA', 'AVENIDAKRA', 'AVENIDAKR', 'AVENIDACR', 'AVENIDAK', 'AVCARRERA', 'AVCRA', 'AVKRA', 'AKR', 'AVCR', 'AVK', 'BL', 'BULEVAR', 'DG', 'DIAGONAL', 'DIAG', 'PJ', 'PASAJE', 'PS', 'PASEO', 'PT', 'PEATONAL', 'TV', 'TRANSVERSAL', 'TRANS', 'TR', 'TC', 'TRONCAL', 'VT', 'VARIANTE', 'VI', 'VIA', 'VÍA']
+arrayNumeralV = ['NRO.', 'NO.', '#', 'N°', 'N.°', 'NUMERO', 'NUMERAL', 'NÚMERO']
+bis = 'BIS'
+
+
+def whatComponentIsNext(address):
+    print(address)
+    main.arrayNumeralV = sorted(main.arrayNumeralV, key=len, reverse=True)
+    posBis1 = address.find(bis)
+    posNumb = -1
+    for i in main.arrayNumeralV:
+        if address.find(i) != -1:
+            posNumb = address.find(i)
+            break
+    if posBis1 != -1 and posNumb != -1 and posBis1 < posNumb:
+        return posBis1
+    elif posBis1 != -1 and posNumb != -1 and posBis1 > posNumb:
+        return posNumb
+    elif posBis1 == -1 and posNumb != -1:
+        return posNumb
+    elif posBis1 != -1 and posNumb == -1:
+        return posBis1
+    else:
+        return -1
 
 
 def q10(address, pos):
     address2 = address[pos+1: (len(address))] if address[pos+1] == " " else address[pos: (len(address))]
-    print(address2)
-    patternAZ = re.compile("^[A-Z]+$")
-    pattern09 = re.compile("^\d+$")
-    patternECAZ09 = re.compile("^[A-Za-z#'°.\d\-]+$")
-    count = 0
-    "for i in main.arrayNumeralV:"
-    "if i in address2:"
+    address2 = address2[1:len(address)] if address2[0] == ' ' else address2[0:len(address)]
+    posNextComponent = whatComponentIsNext(address2)
+    print(posNextComponent)
 
 
 def validateTypeOfRoad(address):
