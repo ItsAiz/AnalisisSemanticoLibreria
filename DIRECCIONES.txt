@@ -1,3 +1,8 @@
+avenida carrera 15#9-38
+av primera de mayo bis a # 45-13
+cra 4 sur # 4-3
+tc papayo # 15-12 norte
+carretera 15 # 10-12
 avenida 1 A-B bis A norte # 2-15
 avenida 1 bis A-B NORTE # 2-15
 carretera 15 Norte Nro. 2 - 16
@@ -17,3 +22,4 @@ TRANSVERSAL 78 I BIS # 41 A 16 SUR
 Carrera 20 B # 29-18. Barrio Pie de la Popa
 Avenida 3 norte # 50N-20
 Diagonal 32B bis A sur n.º 6-32 este
+Dg 32B bis A sur n.º 6-32 este
