@@ -6,10 +6,10 @@ import main
 arrayRoadTypes = ['CARRERA', 'CRA', 'KRA', 'KR', 'CR', 'CALLE', 'CLL', 'CL', 'CT', 'CARRETERA', 'CQ', 'CIRCULAR', 'CIR', 'CV', 'CIRCUNVALAR', 'CRV', 'CC', 'CUENTASCORRIDAS', 'AU', 'AUT', 'AUTOPISTA', 'AV', 'AVENIDA', 'AC', 'AVENIDACALLE', 'AVENIDACLL', 'AVENIDAC', 'AVENIDACL', 'AVCALLE', 'AVCALLE', 'AVCLL', 'AVCL', 'AK', 'AVENIDACARRERA', 'AVENIDACRA', 'AVENIDAKRA', 'AVENIDAKR', 'AVENIDACR', 'AVENIDAK', 'AVCARRERA', 'AVCRA', 'AVKRA', 'AKR', 'AVCR', 'AVK', 'BL', 'BULEVAR', 'DG', 'DIAGONAL', 'DIAG', 'PJ', 'PASAJE', 'PS', 'PASEO', 'PT', 'PEATONAL', 'TV', 'TRANSVERSAL', 'TRANS', 'TR', 'TC', 'TRONCAL', 'VT', 'VARIANTE', 'VI', 'VIA', 'VÍA']
 arrayNumeralV = ['NRO.', 'NO.', '#', 'N°', 'N.°', 'NUMERO', 'NUMERAL', 'NÚMERO']
 bis = 'BIS'
+ADDRESS = ''
 
 
 def whatComponentIsNext(address):
-    print(address)
     main.arrayNumeralV = sorted(main.arrayNumeralV, key=len, reverse=True)
     posBis1 = address.find(bis)
     posNumb = -1
@@ -18,15 +18,15 @@ def whatComponentIsNext(address):
             posNumb = address.find(i)
             break
     if posBis1 != -1 and posNumb != -1 and posBis1 < posNumb:
-        return posBis1
+        return address[posBis1:len(address)]
     elif posBis1 != -1 and posNumb != -1 and posBis1 > posNumb:
-        return posNumb
+        return address[posNumb:len(address)]
     elif posBis1 == -1 and posNumb != -1:
-        return posNumb
+        return address[posNumb:len(address)]
     elif posBis1 != -1 and posNumb == -1:
-        return posBis1
+        return address[posBis1:len(address)]
     else:
-        return -1
+        return sys.exit(1)
 
 
 def q10(address, pos):
@@ -37,6 +37,7 @@ def q10(address, pos):
 
 
 def validateTypeOfRoad(address):
+    main.ADDRESS = address
     main.arrayRoadTypes = sorted(main.arrayRoadTypes, key=len, reverse=True)
     pattern = r'\s+'
     addressPiv = re.sub(pattern, '', address)
