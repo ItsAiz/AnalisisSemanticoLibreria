@@ -22,12 +22,16 @@ ADDRESS = ''
 patternA = "(([A-Z]){1})$"
 patternB = "(([A-Z]){1}(\s|\-){1}([A-Z]){1})$"
 patternC = "(([A-Z]){1}(\s|\-){1}(\d)(\s|\-){1}([A-Z]){1})$"
+patternB1 = "(([A-Z]){1}(\s|\-){1}([A-Z]){1})"
+patternC1 = "(([A-Z]){1}(\s|\-){1}(\d)(\s|\-){1}([A-Z]){1})"
+patternA1 = "([A-Z]){1}"
 outPut = ''
 isA = False
 isAA = False
 isA1A = False
 isNumber = False
 isAlphanumeric = False
+isCardinal = False
 
 
 def whatComponentIsNext(address):
@@ -73,33 +77,43 @@ def whatComponentIsNext(address):
         return res
 
 
+def isCardinalF(value):
+    for i in main.cardinalPoints:
+        if value in i:
+            main.isCardinal = True
+            break
+
+
+def formatRefexRes(value):
+    value = str((value.span())).replace("(", "")
+    value = value.replace(")", "")
+    value = value.replace(",", "")
+    return value.split()
+
+
 def qAfterBistoNumOrTypeR(afterComponent):
+    if afterComponent[0] == ' ':
+        afterComponent = afterComponent[1:len(afterComponent)]
     if afterComponent[len(afterComponent) - 1] == ' ':
         afterComponent = afterComponent[0:len(afterComponent) - 1]
-    if re.search(main.patternC, afterComponent):
-        val = str(re.search(main.patternC, afterComponent).span()).replace("(", "")
-        val = val.replace(")", "")
-        val = val.replace(",", "")
-        val = val.split()
-        afterComponent = afterComponent[(int(val[0])):len(afterComponent)]
-        main.isA1A = True
-    elif re.search(main.patternB, afterComponent):
-        val = str(re.search(main.patternB, afterComponent).span()).replace("(", "")
-        val = val.replace(")", "")
-        val = val.replace(",", "")
-        val = val.split()
-        afterComponent = afterComponent[0: int(val[0]) - 1]
-        main.isAA = True
-    elif re.search(main.patternA, afterComponent):
-        val = str(re.search(main.patternA, afterComponent).span()).replace("(", "")
-        val = val.replace(")", "")
-        val = val.replace(",", "")
-        val = val.split()
+    if re.search(main.patternA1, afterComponent):
+        val = formatRefexRes(re.search(main.patternA1, afterComponent))
         back = afterComponent[int(val[0]) - 1]
-        if (48 <= ord(back) <= 57) or back == " ":
+        if (48 <= ord(back) <= 57) and int(val[1]) < len(afterComponent) or back == " " or back == "":
             main.isA = True
         else:
-            print("siu")
+            if afterComponent[0] == ' ':
+                qAfterBistoNumOrTypeR(afterComponent)
+            else:
+                main.isA = True
+                if re.search(main.patternB1, afterComponent):
+                    main.isAA = True
+                    main.isA = False
+                    if re.search(main.patternC1, afterComponent):
+                        main.isA1A = True
+                        main.isA = False
+                        main.isAA = False
+
     else:
         main.outPut = main.outPut + '1'
         print(main.outPut)
@@ -177,6 +191,12 @@ def qNumb(beforeComponent, afterComponent, address):
 
 
 def qbis(beforeComponent, afterComponent, address2):
+    re.compile(main.patternA)
+    re.compile(main.patternB)
+    re.compile(main.patternC)
+    re.compile(main.patternA1)
+    re.compile(main.patternB1)
+    re.compile(main.patternC1)
     qBeforeBisNum(beforeComponent)
     if main.isAlphanumeric:
         main.outPut = main.outPut + "0"
@@ -195,7 +215,6 @@ def qbis(beforeComponent, afterComponent, address2):
             main.isAlphanumeric = False
     posAfterComponent = whatComponentIsNext(afterComponent)
     arrayLimits = posAfterComponent.split()
-    print(arrayLimits)
     if arrayLimits[0] == arrayLimits[1]:
         beforeComponentAfter = afterComponent[0: int(arrayLimits[0])]
         afterComponentAfter = afterComponent[int(arrayLimits[1]) + 1:len(afterComponent)]
@@ -203,8 +222,23 @@ def qbis(beforeComponent, afterComponent, address2):
         beforeComponentAfter = afterComponent[0: int(arrayLimits[0])]
         afterComponentAfter = afterComponent[int(arrayLimits[1]):len(afterComponent)]
     componentValue = arrayLimits[2]
-    print("bef", beforeComponentAfter)
-    print("aft", afterComponentAfter)
+    print(address2)
+    print(beforeComponentAfter)
+    qAfterBistoNumOrTypeR(beforeComponentAfter)
+    print("Cardinal", isCardinal)
+    print("A", main.isA)
+    print("AA", main.isAA)
+    print("A1A", main.isA1A)
+    main.isA = False
+    main.isAA = False
+    main.isA1A = False
+
+    main.patternA = "([A-Z]){1}$"
+    main.patternB = "(([A-Z]){1}(\s|\-){1}([A-Z]){1})$"
+    main.patternC = "(([A-Z]){1}(\s|\-){1}(\d)(\s|\-){1}([A-Z]){1})$"
+    re.compile(main.patternA)
+    re.compile(main.patternB)
+    re.compile(main.patternC)
 
 
 def q10(address, pos):
