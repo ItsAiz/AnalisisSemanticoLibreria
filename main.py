@@ -3,13 +3,26 @@ import sys
 
 import main
 
-arrayRoadTypes = ['CARRERA', 'CRA', 'KRA', 'KR', 'CR', 'CALLE', 'CLL', 'CL', 'CT', 'CARRETERA', 'CQ', 'CIRCULAR', 'CIR', 'CV', 'CIRCUNVALAR', 'CRV', 'CC', 'CUENTASCORRIDAS', 'AU', 'AUT', 'AUTOPISTA', 'AV', 'AVENIDA', 'AC', 'AVENIDACALLE', 'AVENIDACLL', 'AVENIDAC', 'AVENIDACL', 'AVCALLE', 'AVCALLE', 'AVCLL', 'AVCL', 'AK', 'AVENIDACARRERA', 'AVENIDACRA', 'AVENIDAKRA', 'AVENIDAKR', 'AVENIDACR', 'AVENIDAK', 'AVCARRERA', 'AVCRA', 'AVKRA', 'AKR', 'AVCR', 'AVK', 'BL', 'BULEVAR', 'DG', 'DIAGONAL', 'DIAG', 'PJ', 'PASAJE', 'PS', 'PASEO', 'PT', 'PEATONAL', 'TV', 'TRANSVERSAL', 'TRANS', 'TR', 'TC', 'TRONCAL', 'VT', 'VARIANTE', 'VI', 'VIA', 'VÍA']
-arrayRoadTypesNoneTwoWords = ['CARRERA', 'CRA', 'KRA', 'KR', 'CR', 'CALLE', 'CLL', 'CL', 'CT', 'CARRETERA', 'CQ', 'CIRCULAR', 'CIR', 'CV', 'CIRCUNVALAR', 'CRV', 'AU', 'AUT', 'AUTOPISTA', 'AV', 'AVENIDA',  'BL', 'BULEVAR', 'DG', 'DIAGONAL', 'DIAG', 'PJ', 'PASAJE', 'PS', 'PASEO', 'PT', 'PEATONAL', 'TV', 'TRANSVERSAL', 'TRANS', 'TR', 'TC', 'TRONCAL', 'VT', 'VARIANTE', 'VI', 'VIA', 'VÍA']
+arrayRoadTypes = ['CARRERA', 'CRA', 'KRA', 'KR', 'CR', 'CALLE', 'CLL', 'CL', 'CT', 'CARRETERA', 'CQ', 'CIRCULAR', 'CIR',
+                  'CV', 'CIRCUNVALAR', 'CRV', 'CC', 'CUENTASCORRIDAS', 'AU', 'AUT', 'AUTOPISTA', 'AV', 'AVENIDA', 'AC',
+                  'AVENIDACALLE', 'AVENIDACLL', 'AVENIDAC', 'AVENIDACL', 'AVCALLE', 'AVCALLE', 'AVCLL', 'AVCL', 'AK',
+                  'AVENIDACARRERA', 'AVENIDACRA', 'AVENIDAKRA', 'AVENIDAKR', 'AVENIDACR', 'AVENIDAK', 'AVCARRERA',
+                  'AVCRA', 'AVKRA', 'AKR', 'AVCR', 'AVK', 'BL', 'BULEVAR', 'DG', 'DIAGONAL', 'DIAG', 'PJ', 'PASAJE',
+                  'PS', 'PASEO', 'PT', 'PEATONAL', 'TV', 'TRANSVERSAL', 'TRANS', 'TR', 'TC', 'TRONCAL', 'VT',
+                  'VARIANTE', 'VI', 'VIA', 'VÍA']
+arrayRoadTypesNoneTwoWords = ['CARRERA', 'CRA', 'KRA', 'KR', 'CR', 'CALLE', 'CLL', 'CL', 'CT', 'CARRETERA', 'CQ',
+                              'CIRCULAR', 'CIR', 'CV', 'CIRCUNVALAR', 'CRV', 'AU', 'AUT', 'AUTOPISTA', 'AV', 'AVENIDA',
+                              'BL', 'BULEVAR', 'DG', 'DIAGONAL', 'DIAG', 'PJ', 'PASAJE', 'PS', 'PASEO', 'PT',
+                              'PEATONAL', 'TV', 'TRANSVERSAL', 'TRANS', 'TR', 'TC', 'TRONCAL', 'VT', 'VARIANTE', 'VI',
+                              'VIA', 'VÍA']
 arrayNumeralV = ['NRO.', 'NO.', '#', 'N°', 'N.°', 'NUMERO', 'NUMERAL', 'NÚMERO']
 ABC = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
 bis = 'BIS'
 cardinalPoints = ['NORTE', 'SUR', 'ESTE', 'OESTE']
 ADDRESS = ''
+patternA = "([A-Z]){1}"
+patternB = "([A-Z]){1}(\s|\-){1}([A-Z]){1}"
+patternC = "([A-Z]){1}(\s|\-){1}(\d)(\s|\-){1}([A-Z]){1}"
 
 
 def whatComponentIsNext(address):
@@ -28,7 +41,7 @@ def whatComponentIsNext(address):
             break
     for i in main.arrayRoadTypesNoneTwoWords:
         if address.find(i) != -1:
-            if i != main.ADDRESS[0:(len(main.ADDRESS) - len(address))-1]:
+            if i != main.ADDRESS[0:(len(main.ADDRESS) - len(address)) - 1]:
                 posTypeRoad = address.find(i)
                 strTypeR = i
                 break
@@ -36,47 +49,98 @@ def whatComponentIsNext(address):
                 break
 
     if posBis1 != -1 and posNumb != -1 and posBis1 < posNumb:
-        res = str(posBis1) + " " + str(len(bis)+posBis1)+" "+bis
+        res = str(posBis1) + " " + str(len(bis) + posBis1) + " " + bis
         return res
     elif posBis1 != -1 and posNumb != -1 and posBis1 > posNumb:
-        res = str(posNumb)+" "+str(len(strComp)+posNumb)+" "+strComp
+        res = str(posNumb) + " " + str(len(strComp) + posNumb) + " " + strComp
         return res
     elif posBis1 == -1 and posNumb != -1:
-        res = str(posNumb)+" "+str(len(strComp)+posNumb)+" "+strComp
+        res = str(posNumb) + " " + str(len(strComp) + posNumb) + " " + strComp
         return res
     elif posBis1 != -1 and posNumb == -1:
-        res = str(posBis1)+" "+str(len(bis)+posBis1)+" "+bis
+        res = str(posBis1) + " " + str(len(bis) + posBis1) + " " + bis
         return res
     elif posBis1 == -1 and posNumb == -1 and posTypeRoad != -1:
-        res = str(posTypeRoad)+" "+str(len(strTypeR)+posTypeRoad)+" "+strTypeR
+        res = str(posTypeRoad) + " " + str(len(strTypeR) + posTypeRoad) + " " + strTypeR
         return res
     else:
-        res = res+'-1'
+        res = res + '-1'
         return res
-
 
 def q30(beforeCompoment, afterComponent, address2):
     print("q30")
-    patternN = "/^[0-9]+$/"
-    patternA = "/([A-Z]){1}/"
-    re.compile(patternA)
+    re.compile(main.patternA)
+    re.compile(main.patternB)
+    re.compile(main.patternC)
     arrayBeforeC = beforeCompoment.split()
     arrayAfterC = afterComponent.split()
-    count = 0
+    isA = False
+    isAA = False
+    isA1A = False
+    isNumber = False
+    isAlphanumeric = False
     for i in arrayBeforeC:
-        for j in i:
-            print(re.search(j, patternA))
-            if re.search(patternA,j) != 'None':
-                count += 1
-
-    print(count)
+        if re.search(main.patternA, i):
+            isA = True
+            break
+        elif re.search(main.patternB, i):
+            isAA = True
+            break
+        elif re.search(main.patternC, i):
+            isA1A = True
+            break
+        elif re.search("(\\d)", i):
+            isNumber = True
+            break
+        elif re.search("(\\d|\w)"):
+            isAlphanumeric = True
+            break
+        else:
+            print("Dirección no valida")
+            sys.exit(1)
+    print("solo A ", isA)
+    print("solo A-B", isAA)
+    print("solo A-B-C", isA1A)
+    print("solo numero", isNumber)
+    print("Nombre", isAlphanumeric)
 
 
 def q36(beforeCompoment, afterComponent, address2):
     print("q36")
+    re.compile(main.patternA)
+    re.compile(main.patternB)
+    re.compile(main.patternC)
     arrayBeforeC = beforeCompoment.split()
     arrayAfterC = afterComponent.split()
-
+    isA = False
+    isAA = False
+    isA1A = False
+    isNumber = False
+    isAlphanumeric = False
+    for i in arrayBeforeC:
+        if re.search(main.patternA, i):
+            isA = True
+            break
+        elif re.search(main.patternB, i):
+            isAA = True
+            break
+        elif re.search(main.patternC, i):
+            isA1A = True
+            break
+        elif re.search("(\\d)", i):
+            isNumber = True
+            break
+        elif re.search("(\\d|\w)"):
+            isAlphanumeric = True
+            break
+        else:
+            print("Dirección no valida")
+            sys.exit(1)
+    print("solo A ", isA)
+    print("solo A-B", isAA)
+    print("solo A-B-C", isA1A)
+    print("solo numero", isNumber)
+    print("Nombre", isAlphanumeric)
 
 
 def q10(address, pos):
@@ -91,7 +155,7 @@ def q10(address, pos):
             arrayLimits = posNextComponent.split()
             if arrayLimits[0] == arrayLimits[1]:
                 beforeComponent = address2[0: int(arrayLimits[0])]
-                afterComponent = address2[int(arrayLimits[1])+1:len(address2)]
+                afterComponent = address2[int(arrayLimits[1]) + 1:len(address2)]
             else:
                 beforeComponent = address2[0: int(arrayLimits[0])]
                 afterComponent = address2[int(arrayLimits[1]):len(address2)]
