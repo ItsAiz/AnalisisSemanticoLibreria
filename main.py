@@ -16,13 +16,18 @@ arrayRoadTypesNoneTwoWords = ['CARRERA', 'CRA', 'KRA', 'KR', 'CR', 'CALLE', 'CLL
                               'PEATONAL', 'TV', 'TRANSVERSAL', 'TRANS', 'TR', 'TC', 'TRONCAL', 'VT', 'VARIANTE', 'VI',
                               'VIA', 'VÍA']
 arrayNumeralV = ['NRO.', 'NO.', '#', 'N°', 'N.°', 'NUMERO', 'NUMERAL', 'NÚMERO']
-ABC = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
 bis = 'BIS'
 cardinalPoints = ['NORTE', 'SUR', 'ESTE', 'OESTE']
 ADDRESS = ''
-patternA = "([A-Z]){1}"
-patternB = "([A-Z]){1}(\s|\-){1}([A-Z]){1}"
-patternC = "([A-Z]){1}(\s|\-){1}(\d)(\s|\-){1}([A-Z]){1}"
+patternA = "(([A-Z]){1})$"
+patternB = "(([A-Z]){1}(\s|\-){1}([A-Z]){1})$"
+patternC = "(([A-Z]){1}(\s|\-){1}(\d)(\s|\-){1}([A-Z]){1})$"
+outPut = ''
+isA = False
+isAA = False
+isA1A = False
+isNumber = False
+isAlphanumeric = False
 
 
 def whatComponentIsNext(address):
@@ -67,83 +72,110 @@ def whatComponentIsNext(address):
         res = res + '-1'
         return res
 
-def q30(beforeCompoment, afterComponent, address2):
-    print("q30")
-    re.compile(main.patternA)
-    re.compile(main.patternB)
-    re.compile(main.patternC)
-    arrayBeforeC = beforeCompoment.split()
+
+def qAfterBistoNumOrTypeR(afterComponent):
     arrayAfterC = afterComponent.split()
-    isA = False
-    isAA = False
-    isA1A = False
-    isNumber = False
-    isAlphanumeric = False
-    for i in arrayBeforeC:
+    for i in arrayAfterC:
         if re.search(main.patternA, i):
-            isA = True
+            main.isA = True
+            main.outPut = main.outPut + '0'
             break
         elif re.search(main.patternB, i):
-            isAA = True
+            main.isAA = True
+            main.outPut = main.outPut + '0'
             break
         elif re.search(main.patternC, i):
-            isA1A = True
+            main.isA1A = True
+            main.outPut = main.outPut + '0'
             break
         elif re.search("(\\d)", i):
-            isNumber = True
-            break
-        elif re.search("(\\d|\w)"):
-            isAlphanumeric = True
+            main.outPut = main.outPut + '0'
             break
         else:
-            print("Dirección no valida")
+            main.outPut = main.outPut + '1'
+            print(main.outPut)
+            print("Cadena no valida")
             sys.exit(1)
-    print("solo A ", isA)
-    print("solo A-B", isAA)
-    print("solo A-B-C", isA1A)
-    print("solo numero", isNumber)
-    print("Nombre", isAlphanumeric)
 
 
-def q36(beforeCompoment, afterComponent, address2):
-    print("q36")
-    re.compile(main.patternA)
-    re.compile(main.patternB)
-    re.compile(main.patternC)
-    arrayBeforeC = beforeCompoment.split()
-    arrayAfterC = afterComponent.split()
-    isA = False
-    isAA = False
-    isA1A = False
-    isNumber = False
-    isAlphanumeric = False
-    for i in arrayBeforeC:
-        if re.search(main.patternA, i):
-            isA = True
-            break
-        elif re.search(main.patternB, i):
-            isAA = True
-            break
-        elif re.search(main.patternC, i):
-            isA1A = True
-            break
-        elif re.search("(\\d)", i):
-            isNumber = True
-            break
-        elif re.search("(\\d|\w)"):
-            isAlphanumeric = True
-            break
+def qBeforeBisNum(beforeComponent):
+    if beforeComponent[len(beforeComponent)-1] == ' ':
+        beforeComponent = beforeComponent[0:len(beforeComponent)-1]
+    if re.search(main.patternC, beforeComponent):
+        val = str(re.search(main.patternC, beforeComponent).span()).replace("(", "")
+        val = val.replace(")", "")
+        val = val.replace(",", "")
+        val = val.split()
+        beforeComponent = beforeComponent[0: (int(val[0]))]
+        main.isA1A = True
+        if re.search("(\\d|\w)", beforeComponent):
+            main.isAlphanumeric = True
+        elif re.search("(\\d)", beforeComponent):
+            main.isNumber = True
         else:
-            print("Dirección no valida")
+            main.outPut = main.outPut + '1'
+            print(main.outPut)
+            print("Cadena no valida")
             sys.exit(1)
-    print("solo A ", isA)
-    print("solo A-B", isAA)
-    print("solo A-B-C", isA1A)
-    print("solo numero", isNumber)
-    print("Nombre", isAlphanumeric)
+    elif re.search(main.patternB, beforeComponent):
+        val = str(re.search(main.patternB, beforeComponent).span()).replace("(", "")
+        val = val.replace(")", "")
+        val = val.replace(",", "")
+        val = val.split()
+        beforeComponent = beforeComponent[0: int(val[0])-1]
+        main.isAA = True
+        if re.search("(\\d|\w)", beforeComponent):
+            main.isAlphanumeric = True
+        elif re.search("(\\d)", beforeComponent):
+            main.isNumber = True
+        else:
+            main.outPut = main.outPut + '1'
+            print(main.outPut)
+            print("Cadena no valida")
+            sys.exit(1)
+    elif re.search(main.patternA, beforeComponent):
+        val = str(re.search(main.patternA, beforeComponent).span()).replace("(", "")
+        val = val.replace(")", "")
+        val = val.replace(",", "")
+        val = val.split()
+        back = beforeComponent[int(val[0])-1]
+        if (48 <= ord(back) <= 57) or back == " ":
+            main.isA = True
+        else:
+            if re.search("(\\d|\w)", beforeComponent):
+                main.isAlphanumeric = True
+            elif re.search("(\\d)", beforeComponent):
+                main.isNumber = True
+            else:
+                main.outPut = main.outPut + '1'
+                print(main.outPut)
+                print("Cadena no valida")
+                sys.exit(1)
+    else:
+        if re.search("(\\d|\w)", beforeComponent):
+            main.isAlphanumeric = True
+        elif re.search("(\\d)", beforeComponent):
+            main.isNumber = True
+        else:
+            main.outPut = main.outPut + '1'
+            print(main.outPut)
+            print("Cadena no valida")
+            sys.exit(1)
+
+
+def qNumb(beforeComponent, afterComponent, address):
+    print("qNumb")
+
+
+def qbis(beforeCompoment, afterComponent, address2):
+    print("qbis")
+    qBeforeBisNum(beforeCompoment)
 
 
 def q10(address, pos):
+    re.compile(main.patternA)
+    re.compile(main.patternB)
+    re.compile(main.patternC)
     try:
         address2 = address[pos + 1: (len(address))] if address[pos + 1] == " " else address[pos: (len(address))]
         address2 = address2[1:len(address)] if address2[0] == ' ' else address2[0:len(address)]
@@ -161,13 +193,13 @@ def q10(address, pos):
                 afterComponent = address2[int(arrayLimits[1]):len(address2)]
             componentValue = arrayLimits[2]
             if componentValue == bis:
-                q30(beforeComponent, afterComponent, address2)
+                qbis(beforeComponent, afterComponent, address2)
             else:
-                q36(beforeComponent, afterComponent, address2)
-
-
+                qNumb(beforeComponent, afterComponent, address2)
     except:
+        main.outPut = main.outPut + '1'
         print("Cadena no valida")
+        print(main.outPut)
         sys.exit(1)
 
 
@@ -183,6 +215,7 @@ def validateTypeOfRoad(address):
             break
 
     if len(direc) > 1:
+        main.outPut = '0'
         q10(address, len(direc))
     else:
         sys.exit(1)
