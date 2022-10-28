@@ -170,17 +170,22 @@ def qNumb(beforeComponent, afterComponent, address):
 
 def qbis(beforeComponent, afterComponent, address2):
     qBeforeBisNum(beforeComponent)
-    print("A", main.isA)
-    print("AA", main.isAA)
-    print("A1A", main.isA1A)
-    print("Alpha", main.isAlphanumeric)
-    print("num", main.isNumber)
-    print("\n")
-    main.isA = False
-    main.isAA = False
-    main.isA1A = False
-    main.isNumber = False
-    main.isAlphanumeric = False
+    if main.isAlphanumeric:
+        main.outPut = main.outPut + "0"
+        if main.isA or main.isAA or main.isA1A:
+            main.outPut = main.outPut + "0"
+            print("A", main.isA)
+            print("AA", main.isAA)
+            print("A1A", main.isA1A)
+            print("Alpha", main.isAlphanumeric)
+            print("num", main.isNumber)
+            print("output", main.outPut)
+            print("\n")
+            main.isA = False
+            main.isAA = False
+            main.isA1A = False
+            main.isNumber = False
+            main.isAlphanumeric = False
 
 
 def q10(address, pos):
