@@ -101,6 +101,7 @@ def qAfterBistoNumOrTypeR(afterComponent):
 def qBeforeBisNum(beforeComponent):
     if beforeComponent[len(beforeComponent)-1] == ' ':
         beforeComponent = beforeComponent[0:len(beforeComponent)-1]
+    print(beforeComponent)
     if re.search(main.patternC, beforeComponent):
         val = str(re.search(main.patternC, beforeComponent).span()).replace("(", "")
         val = val.replace(")", "")
@@ -167,9 +168,19 @@ def qNumb(beforeComponent, afterComponent, address):
     print("qNumb")
 
 
-def qbis(beforeCompoment, afterComponent, address2):
-    print("qbis")
-    qBeforeBisNum(beforeCompoment)
+def qbis(beforeComponent, afterComponent, address2):
+    qBeforeBisNum(beforeComponent)
+    print("A", main.isA)
+    print("AA", main.isAA)
+    print("A1A", main.isA1A)
+    print("Alpha", main.isAlphanumeric)
+    print("num", main.isNumber)
+    print("\n")
+    main.isA = False
+    main.isAA = False
+    main.isA1A = False
+    main.isNumber = False
+    main.isAlphanumeric = False
 
 
 def q10(address, pos):
