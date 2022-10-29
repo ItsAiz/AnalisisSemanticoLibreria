@@ -21,9 +21,7 @@ ADDRESS = ''
 patternA = "(([A-Z]){1})$"
 patternB = "(([A-Z]){1}(\s|\-){1}([A-Z]){1})$"
 patternC = "(([A-Z]){1}(\s|\-){1}(\d)(\s|\-){1}([A-Z]){1})$"
-patternB1 = "(([A-Z]){1}(\s|\-){1}([A-Z]){1})"
-patternC1 = "(([A-Z]){1}(\s|\-){1}(\d)(\s|\-){1}([A-Z]){1})"
-patternA1 = "([A-Z]){1}"
+patternCardinal = "(NORTE)|(SUR)|(ESTE)|(OESTE)"
 outPut = ''
 isA = False
 isAA = False
@@ -77,9 +75,8 @@ def whatComponentIsNext(address):
 
 
 def isCardinalValidate(address):
-    pattern = "(NORTE)|(SUR)|(ESTE)|(OESTE)"
-    re.compile(pattern)
-    main.isCardinal = True if re.search(pattern, address) else False
+    re.compile(main.patternCardinal)
+    main.isCardinal = True if re.search(main.patternCardinal, address) else False
 
 
 def formatRefexRes(value):
@@ -91,32 +88,37 @@ def formatRefexRes(value):
 
 def qAfterBistoNumOrTypeR(afterComponent):
     isCardinalValidate(afterComponent)
-    if afterComponent[0] == ' ' and len(afterComponent) > 1:
-        afterComponent = afterComponent[1:len(afterComponent)]
-    if afterComponent[len(afterComponent) - 1] == ' ':
-        afterComponent = afterComponent[0:len(afterComponent) - 1]
-    if re.search(main.patternA1, afterComponent):
-        val = formatRefexRes(re.search(main.patternA1, afterComponent))
-        back = afterComponent[int(val[0]) - 1]
-        if (48 <= ord(back) <= 57) and int(val[1]) < len(afterComponent) or back == " " or back == "":
-            main.isA = True
-        else:
-            if afterComponent[0] == ' ':
-                qAfterBistoNumOrTypeR(afterComponent)
-            else:
+    if afterComponent is None or len(afterComponent) == 0:
+        main.isSpace = True
+    else:
+        if main.isCardinal:
+            posCardinal = formatRefexRes(re.search(main.patternCardinal, afterComponent))
+            afterComponent = afterComponent[0:int(posCardinal[0])]
+        if afterComponent[0] == ' ' and len(afterComponent) > 1:
+            afterComponent = afterComponent[1:len(afterComponent)]
+        if afterComponent[len(afterComponent) - 1] == ' ':
+            afterComponent = afterComponent[0:len(afterComponent) - 1]
+        if re.search(main.patternA, afterComponent):
+            val = formatRefexRes(re.search(main.patternA, afterComponent))
+            back = afterComponent[int(val[0]) - 1]
+            if (48 <= ord(back) <= 57) and len(afterComponent) < 1 or back == " " or back == "":
                 main.isA = True
-                if re.search(main.patternB1, afterComponent):
-                    main.isAA = True
-                    main.isA = False
-                    if re.search(main.patternC1, afterComponent):
+            else:
+                if afterComponent[0] == ' ':
+                    qAfterBistoNumOrTypeR(afterComponent)
+                else:
+                    main.isA = True
+                    if re.search(main.patternB, afterComponent):
+                        main.isAA = True
+                        main.isA = False
+                    if re.search(main.patternC, afterComponent):
                         main.isA1A = True
                         main.isA = False
                         main.isAA = False
 
-    else:
-        if afterComponent == "" or afterComponent == " ":
-            main.isSpace = True
-
+        else:
+            if afterComponent == "" or afterComponent == " ":
+                main.isSpace = True
 
 def qBeforeBisNum(beforeComponent):
     if beforeComponent[len(beforeComponent) - 1] == ' ':
@@ -135,7 +137,7 @@ def qBeforeBisNum(beforeComponent):
         else:
             main.outPut = main.outPut + '1'
             print(main.outPut)
-            print("Cadena no valida")
+            print("Cadena no valida BeforeBis1")
             sys.exit(1)
     elif re.search(main.patternB, beforeComponent):
         val = str(re.search(main.patternB, beforeComponent).span()).replace("(", "")
@@ -180,7 +182,7 @@ def qBeforeBisNum(beforeComponent):
         else:
             main.outPut = main.outPut + '1'
             print(main.outPut)
-            print("Cadena no valida")
+            print("Cadena no valida beforeBis")
             sys.exit(1)
 
 
@@ -197,26 +199,30 @@ def qvalidateAfterBis(afterComponent):
     else:
         beforeComponentAfter = afterComponent[0: int(arrayLimits[0])]
         afterComponentAfter = afterComponent[int(arrayLimits[1]):len(afterComponent)]
-
     qAfterBistoNumOrTypeR(beforeComponentAfter)
-    print("Cardinal", main.isCardinal)
-    print("A", main.isA)
-    print("AA", main.isAA)
-    print("A1A", main.isA1A)
-    print("Space", main.isSpace)
-    main.isA = False
-    main.isAA = False
-    main.isA1A = False
-    main.isCardinal = False
+    if main.isAA or main.isA1A or main.isA or main.isCardinal or main.isSpace:
+        print("Cardinal", main.isCardinal)
+        print("A", main.isA)
+        print("AA", main.isAA)
+        print("A1A", main.isA1A)
+        print("Space", main.isSpace)
+        main.outPut = main.outPut + '0'
+        main.isA = False
+        main.isAA = False
+        main.isA1A = False
+        main.isCardinal = False
+        print(main.outPut)
+    else:
+        main.outPut = main.outPut + '1'
+        print(main.outPut)
+        print("Cadena no valida afterbis")
+        sys.exit(1)
 
 
 def qbis(beforeComponent, afterComponent, address2):
     re.compile(main.patternA)
     re.compile(main.patternB)
     re.compile(main.patternC)
-    re.compile(main.patternA1)
-    re.compile(main.patternB1)
-    re.compile(main.patternC1)
     qBeforeBisNum(beforeComponent)
     if main.isAlphanumeric:
         main.outPut = main.outPut + "0"
@@ -238,7 +244,7 @@ def qbis(beforeComponent, afterComponent, address2):
     else:
         main.outPut = main.outPut + '1'
         print(main.outPut)
-        print("Cadena no valida")
+        print("Cadena no valida bis")
         sys.exit(1)
 
 
@@ -269,7 +275,7 @@ def q10(address, pos):
                 qNumb(afterComponent, afterComponent, address2)
     except:
         main.outPut = main.outPut + '1'
-        print("Cadena no valida")
+        print("Cadena no valida q10")
         print(main.outPut)
         sys.exit(1)
 
