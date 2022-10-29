@@ -17,7 +17,6 @@ arrayRoadTypesNoneTwoWords = ['CARRERA', 'CRA', 'KRA', 'KR', 'CR', 'CALLE', 'CLL
                               'VIA', 'VÍA']
 arrayNumeralV = ['NRO.', 'NO.', '#', 'N°', 'N.°', 'NUMERO', 'NUMERAL', 'NÚMERO']
 bis = 'BIS'
-cardinalPoints = ['NORTE', 'SUR', 'ESTE', 'OESTE']
 ADDRESS = ''
 patternA = "(([A-Z]){1})$"
 patternB = "(([A-Z]){1}(\s|\-){1}([A-Z]){1})$"
@@ -77,6 +76,12 @@ def whatComponentIsNext(address):
         return res
 
 
+def isCardinalValidate(address):
+    pattern = "(NORTE)|(SUR)|(ESTE)|(OESTE)"
+    re.compile(pattern)
+    main.isCardinal = True if re.search(pattern, address) else False
+
+
 def formatRefexRes(value):
     value = str((value.span())).replace("(", "")
     value = value.replace(")", "")
@@ -85,6 +90,7 @@ def formatRefexRes(value):
 
 
 def qAfterBistoNumOrTypeR(afterComponent):
+    isCardinalValidate(afterComponent)
     if afterComponent[0] == ' ' and len(afterComponent) > 1:
         afterComponent = afterComponent[1:len(afterComponent)]
     if afterComponent[len(afterComponent) - 1] == ' ':
@@ -193,7 +199,7 @@ def qvalidateAfterBis(afterComponent):
         afterComponentAfter = afterComponent[int(arrayLimits[1]):len(afterComponent)]
 
     qAfterBistoNumOrTypeR(beforeComponentAfter)
-    print("Cardinal", isCardinal)
+    print("Cardinal", main.isCardinal)
     print("A", main.isA)
     print("AA", main.isAA)
     print("A1A", main.isA1A)
