@@ -22,6 +22,7 @@ patternA = "(([A-Z]){1})$"
 patternB = "(([A-Z]){1}(\s|\-){1}([A-Z]){1})$"
 patternC = "(([A-Z]){1}(\s|\-){1}(\d)(\s|\-){1}([A-Z]){1})$"
 patternCardinal = "(NORTE)|(SUR)|(ESTE)|(OESTE)"
+patternDecimal = "^((\d*)(\s|-)(\d*))"
 outPut = ''
 isA = False
 isAA = False
@@ -30,6 +31,7 @@ isNumber = False
 isAlphanumeric = False
 isCardinal = False
 isSpace = False
+isAccepted = False
 
 
 def whatComponentIsNext(address):
@@ -120,6 +122,7 @@ def qAfterBistoNumOrTypeR(afterComponent):
             if afterComponent == "" or afterComponent == " ":
                 main.isSpace = True
 
+
 def qBeforeBisNum(beforeComponent):
     if beforeComponent[len(beforeComponent) - 1] == ' ':
         beforeComponent = beforeComponent[0:len(beforeComponent) - 1]
@@ -186,11 +189,48 @@ def qBeforeBisNum(beforeComponent):
             sys.exit(1)
 
 
-def qNumb(beforeComponent, afterComponent, address):
+def zerosAmount(val):
+    count = 0
+    for i in val:
+        if i == " ":
+            count += count
+    return count
+
+
+def qNumb(afterComponent, address):
     print("qNumb")
+    s = [int(s) for s in re.findall(r'-?\d+\.?\d*', afterComponent)]
+    for i in s:
+        if str(i).startswith("-") and len(s) > 2:
+            s.remove(i)
+    afterComponentAux = afterComponent.replace(" ", "")
+    if len(s) == 2:
+        if re.search(patternDecimal, afterComponentAux):
+            posNumbs = formatRefexRes(re.search(patternDecimal, afterComponentAux))
+            posStart = int(posNumbs[1]) + zerosAmount(afterComponent) + 3
+            afterComponent = afterComponent[posStart: len(afterComponent)]
+            if len(afterComponent) == 0:
+                main.outPut = main.outPut + '0'
+                main.isAccepted = True
+            else:
+                print("aca")
+        else:
+            main.patternA = "(([A-Z]){1})"
+            main.patternB = "([A-Z]){1}(\s|\-){1}([A-Z]){1}"
+            main.patternC = "([A-Z]){1}(\s|\-){1}(\d)(\s|\-){1}([A-Z]){1}"
+            re.compile(main.patternA), re.compile(main.patternB), re.compile(main.patternC)
+            qAfterBistoNumOrTypeR(afterComponent)
+            if main.isA or main.isAA or main.isA1A:
+                main.outPut = main.outPut + '0'
+                main.isA = False
+                main.isAA = False
+                main.isA1A = False
+                main.isAccepted = True
+    else:
+        print("est",afterComponent.find(str(s[1])))
 
 
-def qvalidateAfterBis(afterComponent):
+def qvalidateAfterBis(afterComponent, address):
     posAfterComponent = whatComponentIsNext(afterComponent)
     arrayLimits = posAfterComponent.split()
     if arrayLimits[0] == arrayLimits[1]:
@@ -201,17 +241,18 @@ def qvalidateAfterBis(afterComponent):
         afterComponentAfter = afterComponent[int(arrayLimits[1]):len(afterComponent)]
     qAfterBistoNumOrTypeR(beforeComponentAfter)
     if main.isAA or main.isA1A or main.isA or main.isCardinal or main.isSpace:
-        print("Cardinal", main.isCardinal)
-        print("A", main.isA)
-        print("AA", main.isAA)
-        print("A1A", main.isA1A)
-        print("Space", main.isSpace)
+        # print("Cardinal", main.isCardinal)
+        # print("A", main.isA)
+        # print("AA", main.isAA)
+        # print("A1A", main.isA1A)
+        # print("Space", main.isSpace)
         main.outPut = main.outPut + '0'
         main.isA = False
         main.isAA = False
         main.isA1A = False
         main.isCardinal = False
         print(main.outPut)
+        qNumb(afterComponentAfter, address)
     else:
         main.outPut = main.outPut + '1'
         print(main.outPut)
@@ -233,14 +274,14 @@ def qbis(beforeComponent, afterComponent, address2):
             main.isA1A = False
             main.isNumber = False
             main.isAlphanumeric = False
-            qvalidateAfterBis(afterComponent)
+            qvalidateAfterBis(afterComponent, address2)
         else:
             main.isA = False
             main.isAA = False
             main.isA1A = False
             main.isNumber = False
             main.isAlphanumeric = False
-            qvalidateAfterBis(afterComponent)
+            qvalidateAfterBis(afterComponent, address2)
     else:
         main.outPut = main.outPut + '1'
         print(main.outPut)
@@ -253,6 +294,7 @@ def q10(address, pos):
     re.compile(main.patternA)
     re.compile(main.patternB)
     re.compile(main.patternC)
+    re.compile(main.patternDecimal)
     try:
         address2 = address[pos + 1: (len(address))] if address[pos + 1] == " " else address[pos: (len(address))]
         address2 = address2[1:len(address)] if address2[0] == ' ' else address2[0:len(address)]
@@ -271,13 +313,24 @@ def q10(address, pos):
             componentValue = arrayLimits[2]
             if componentValue == bis:
                 qbis(beforeComponent, afterComponent, address2)
+                if main.isAccepted:
+                    sys.exit(0)
             else:
-                qNumb(afterComponent, afterComponent, address2)
+                qNumb(afterComponent, address2)
+                if main.isAccepted:
+                    sys.exit(0)
     except:
-        main.outPut = main.outPut + '1'
-        print("Cadena no valida q10")
-        print(main.outPut)
-        sys.exit(1)
+        if main.isAccepted:
+            main.isAccepted = False
+            print("Dirección válida")
+            print(main.outPut)
+            #sys.exit(0)
+        else:
+            main.outPut = main.outPut + '1'
+            print("Cadena no valida q10")
+            print(main.outPut)
+            sys.exit(1)
+
 
 
 def validateTypeOfRoad(address):
