@@ -11,6 +11,10 @@ arrayTypeOfStartVer = ['CORREGIMIENTO', 'CARRETERA', 'KILOMETRO',
                  'CA',	'CS',	'BR',	'EN',	'FI',	'HC',	'KM',
                  'PD',	'LT',	'SC',	'VT',	'VI']
 
+arrayComplementVer = ['HACIENDA', 'ENTRADA', 'CAMINO',	'BARRIO',	'PREDIO',	'SECTOR',	'VEREDA',
+                 'FINCA', 'CASA', 'PARCELA', 'LOTE']
+
+
 arrayRoadTypes = ['CARRERA', 'CRA', 'KRA', 'KR', 'CR', 'CALLE', 'CLL', 'CL', 'CT', 'CARRETERA', 'CQ', 'CIRCULAR', 'CIR',
                   'CV', 'CIRCUNVALAR', 'CRV', 'CC', 'CUENTASCORRIDAS', 'AU', 'AUT', 'AUTOPISTA', 'AV', 'AVENIDA', 'AC',
                   'AVENIDACALLE', 'AVENIDACLL', 'AVENIDAC', 'AVENIDACL', 'AVCALLE', 'AVCALLE', 'AVCLL', 'AVCL', 'AK',
@@ -453,15 +457,39 @@ def q10(address, pos):
 
 
 def vereda(address, pos, direcV):
-    print(address, "pos", pos, "start", direcV)
+    print(address)
     if direcV == "VIA" or direcV == "VI" or direcV == "KM" or direcV == "KILOMETRO" or direcV == "VARIANTE" or direcV == "VT":
-        print("si")
+        afterRoad = address[len(direcV):len(address)]
+        if afterRoad[0] == " ":
+            afterRoad = afterRoad[1:len(afterRoad)]
+            s = [int(s) for s in re.findall(r'-?\d+\.?\d*', afterRoad)]
+        if len(s) >= 1:
+            posFirstNumber = afterRoad.index(str(s[0]))
+            posSecondNumber = s[1] if len(s) >= 2 else None
+            if posSecondNumber is not None:
+                complement(afterRoad[posFirstNumber:posSecondNumber])
+                if main.isComplement:
+                    val = str(re.search("|".join(main.arrayComplementVer), afterRoad[posFirstNumber:posSecondNumber]).span())
+                    val = val.replace("(", "")
+                    val = val.replace(")", "")
+                    val = val.replace(",", "")
+                    val = val.split()
+                    if re.search("(\w)", afterRoad[int(val[1]):posSecondNumber]):
+                        main.outPut = main.outPut + '00'
+                        main.isComplement = False
+                        print(main.outPut)
+                        print("Direccion rural correcta")
+
+            else:
+                complement(afterRoad)
+
 
 
 def validateTypeOfRoad(address):
     main.ADDRESS = address
     main.arrayRoadTypes = sorted(main.arrayRoadTypes, key=len, reverse=True)
     main.arrayComplement = sorted(main.arrayComplement, key=len, reverse=True)
+    main.arrayComplementVer = sorted(main.arrayComplementVer, key=len, reverse=True)
     pattern = r'\s+'
     addressPiv = re.sub(pattern, '', address)
     direc = ""
