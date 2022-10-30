@@ -213,16 +213,27 @@ def qNumb(afterComponent, address):
         if str(i).startswith("-") and len(s) > 2:
             s.remove(i)
     afterComponentAux = afterComponent.replace(" ", "")
+    posNumb1 = afterComponent.index(str(s[0]))
+    posNum2 = afterComponent.index(str(s[1]))
     if len(s) == 2:
+        # print("pos", afterComponent[posNumb1], "pos2", afterComponent[posNum2+1])
+        if afterComponent[posNum2] == "-":
+            posNum2 = posNum2 + 1
+        afterBetweenNumbs = afterComponent[posNumb1:posNum2]
+        posNextComponent = whatComponentIsNext(afterBetweenNumbs)
+        posNextComponent = posNextComponent.split()
         if re.search(patternDecimal, afterComponentAux):
             posNumbs = formatRefexRes(re.search(patternDecimal, afterComponentAux))
             posStart = int(posNumbs[1]) + zerosAmount(afterComponent) + 2
             afterComponent = afterComponent[posStart: len(afterComponent)]
+            if len(posNextComponent) > 1 and posNextComponent[2] == main.bis:
+                main.outPut = main.outPut + '0'
             if len(afterComponent) == 0:
                 main.outPut = main.outPut + '0'
                 main.isAccepted = True
             else:
                 isCardinalValidate(afterComponent)
+                complement(afterComponent)
                 if main.isCardinal:
                     val = str(re.search(main.patternCardinal, afterComponent).span()).replace("(", "")
                     val = val.replace(")", "")
@@ -230,28 +241,63 @@ def qNumb(afterComponent, address):
                     val = val.split()
                     afterComponent = afterComponent[int(val[1]):len(afterComponent)]
                     if len(afterComponent) > 0:
-                        complement(afterComponent)
                         if main.isComplement:
-                            main.outPut = main.outPut + '0'
+                            main.outPut = main.outPut + '00'
                             main.isAccepted = True
                     else:
                         main.outPut = main.outPut + '0'
                         main.isAccepted = True
+                if main.isComplement:
+                    main.outPut = main.outPut + '0'
+                    main.isAccepted = True
+
 
         else:
             main.patternA = "(([A-Z]){1})"
             main.patternB = "([A-Z]){1}(\s|\-){1}([A-Z]){1}"
             main.patternC = "([A-Z]){1}(\s|\-){1}(\d)(\s|\-){1}([A-Z]){1}"
             re.compile(main.patternA), re.compile(main.patternB), re.compile(main.patternC)
+            if afterComponent[posNum2] == "-":
+                posNum2 = posNum2 + 1
+            afterComponentD = afterComponent[posNumb1:posNum2]
+            posBis = afterComponentD.find(main.bis)
+            afterComponentD = afterComponentD.replace(" ", "")
             qAfterBistoNumOrTypeR(afterComponent)
+            if afterBetweenNumbs.find(main.bis) != -1:
+                if 90 <= ord(afterComponentD[posBis]) <= 65:
+                    main.outPut = main.outPut + "1"
+                    main.isAccepted = False
+                else:
+                    main.outPut = main.outPut + '0'
+                    main.isAccepted = True
             if main.isA or main.isAA or main.isA1A:
                 main.outPut = main.outPut + '0'
-                main.isA = False
-                main.isAA = False
-                main.isA1A = False
-                main.isAccepted = True
+                if posBis != -1:
+                    if 90 <= ord(afterComponentD[posBis+2]) <= 65:
+                        main.outPut = main.outPut + "1"
+                        main.isA = False
+                        main.isAA = False
+                        main.isA1A = False
+                        main.isAccepted = False
+                    else:
+                        main.outPut = main.outPut + '0'
+                        main.isA = False
+                        main.isAA = False
+                        main.isA1A = False
+                        main.isAccepted = True
+                else:
+                    main.outPut = main.outPut + '0'
+                    main.isA = False
+                    main.isAA = False
+                    main.isA1A = False
+                    main.isAccepted = True
+            else:
+                if afterBetweenNumbs.find(main.bis) !=-1 :
+                    main.outPut = main.outPut + '0'
+                    main.isAccepted = True
     else:
-        print("est", afterComponent.find(str(s[1])))
+        main.isAccepted = False
+        main.outPut = main.outPut + '1'
 
 
 def qvalidateAfterBis(afterComponent, address):
@@ -275,7 +321,6 @@ def qvalidateAfterBis(afterComponent, address):
         main.isAA = False
         main.isA1A = False
         main.isCardinal = False
-        print(main.outPut)
         qNumb(afterComponentAfter, address)
     else:
         main.outPut = main.outPut + '1'
