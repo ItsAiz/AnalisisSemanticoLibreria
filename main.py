@@ -16,6 +16,7 @@ arrayRoadTypesNoneTwoWords = ['CARRERA', 'CRA', 'KRA', 'KR', 'CR', 'CALLE', 'CLL
                               'PEATONAL', 'TV', 'TRANSVERSAL', 'TRANS', 'TR', 'TC', 'TRONCAL', 'VT', 'VARIANTE', 'VI',
                               'VIA', 'VÍA']
 arrayNumeralV = ['NRO.', 'NO.', '#', 'N°', 'N.°', 'NUMERO', 'NUMERAL', 'NÚMERO']
+arrayComplement = ['ADMINISTRACION', 'ADMINISTRACIÓN', 'AD', 'AGRUPACIÓN', 'AGRUPACION', 'AG', 'ALTILLO', 'AL', 'APARTAMENTO', 'AP', 'BARRIO', 'BR', 'BLOQUE', 'BQ', 'BODEGA', 'BG', 'CASA', 'CS', 'CÉLULA', 'CELULA', 'CU', 'CENTRO COMERCIAL', 'CE', 'CIUDADELA', 'CD', 'CONJUNTO RESIDENCIAL', 'CO', 'CONSULTORIO', 'CN', 'DEPOSITO', 'DP', 'DEPOSITO SÓTANO', 'D', 'DEPOSITO SOTANO','EDIFICIO', 'ED', 'ENTRADA', 'EN', 'ESQUINA', 'EQ', 'ESTACIÓN', 'ES', 'ESTACION', 'ETAPA', 'ET', 'EXTERIOR', 'EX', 'FINCA', 'FI', 'GARAJE', 'GA', 'GARAJE SÓTANO', 'GS', 'GARAJE SOTANO', 'INTERIOR', 'IN', 'KILÓMETRO', 'KM', 'KILOMETRO', 'LOCAL', 'LC', 'LOCAL MEZZANINE', 'LM' , 'LOTE', 'LT', 'MANZANA', 'MZ', 'MEZZANINE', 'MN','MÓDULO', 'MODULO', 'MD', 'OFICINA', 'OF', 'PARQUE', 'PQ', 'PARQUEADERO', 'PA', 'PENT-HOUSE', 'PN', 'PISO', 'PI', 'PLANTA', 'PL', 'PORTERIA', 'PR', 'PREDIO', 'PD', 'PUESTO', 'PU', 'ROUND POINT', 'RP', 'SECTOR', 'SC', 'SEMISÓTANO', 'SEMISOTANO', 'SS', 'SÓTANO', 'SO', 'SOTANO', 'SUITE', 'ST', 'SUPERMANZANA', 'SM', 'TERRAZA', 'TZ', 'TORRE', 'TO', 'UNIDAD', 'UN', 'UNIDAD RESIDENCIAL', 'UL', 'URBANIZACIÓN', 'URBANIZACION', 'UR', 'ZONA', 'ZN']
 bis = 'BIS'
 ADDRESS = ''
 patternA = "(([A-Z]){1})$"
@@ -32,6 +33,7 @@ isAlphanumeric = False
 isCardinal = False
 isSpace = False
 isAccepted = False
+isComplement = False
 
 
 def whatComponentIsNext(address):
@@ -197,6 +199,13 @@ def zerosAmount(val):
     return count
 
 
+def complement(value):
+    for i in main.arrayComplement:
+        if value.find(i) != 1:
+            main.isComplement = True
+            break
+
+
 def qNumb(afterComponent, address):
     print("qNumb")
     s = [int(s) for s in re.findall(r'-?\d+\.?\d*', afterComponent)]
@@ -207,13 +216,28 @@ def qNumb(afterComponent, address):
     if len(s) == 2:
         if re.search(patternDecimal, afterComponentAux):
             posNumbs = formatRefexRes(re.search(patternDecimal, afterComponentAux))
-            posStart = int(posNumbs[1]) + zerosAmount(afterComponent) + 3
+            posStart = int(posNumbs[1]) + zerosAmount(afterComponent) + 2
             afterComponent = afterComponent[posStart: len(afterComponent)]
             if len(afterComponent) == 0:
                 main.outPut = main.outPut + '0'
                 main.isAccepted = True
             else:
-                print("aca")
+                isCardinalValidate(afterComponent)
+                if main.isCardinal:
+                    val = str(re.search(main.patternCardinal, afterComponent).span()).replace("(", "")
+                    val = val.replace(")", "")
+                    val = val.replace(",", "")
+                    val = val.split()
+                    afterComponent = afterComponent[int(val[1]):len(afterComponent)]
+                    if len(afterComponent) > 0:
+                        complement(afterComponent)
+                        if main.isComplement:
+                            main.outPut = main.outPut + '0'
+                            main.isAccepted = True
+                    else:
+                        main.outPut = main.outPut + '0'
+                        main.isAccepted = True
+
         else:
             main.patternA = "(([A-Z]){1})"
             main.patternB = "([A-Z]){1}(\s|\-){1}([A-Z]){1}"
@@ -227,7 +251,7 @@ def qNumb(afterComponent, address):
                 main.isA1A = False
                 main.isAccepted = True
     else:
-        print("est",afterComponent.find(str(s[1])))
+        print("est", afterComponent.find(str(s[1])))
 
 
 def qvalidateAfterBis(afterComponent, address):
@@ -336,6 +360,7 @@ def q10(address, pos):
 def validateTypeOfRoad(address):
     main.ADDRESS = address
     main.arrayRoadTypes = sorted(main.arrayRoadTypes, key=len, reverse=True)
+    main.arrayComplement = sorted(main.arrayComplement, key=len, reverse=True)
     pattern = r'\s+'
     addressPiv = re.sub(pattern, '', address)
     direc = ""
