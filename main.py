@@ -207,12 +207,13 @@ def complement(value):
 
 
 def qNumb(afterComponent, address):
-    print("qNumb")
     s = [int(s) for s in re.findall(r'-?\d+\.?\d*', afterComponent)]
     for i in s:
         if str(i).startswith("-") and len(s) > 2:
             s.remove(i)
     afterComponentAux = afterComponent.replace(" ", "")
+    if s[1] < 0:
+        s[1] = s[1]*(-1)
     posNumb1 = afterComponent.index(str(s[0]))
     posNum2 = afterComponent.index(str(s[1]))
     if len(s) == 2:
@@ -271,7 +272,6 @@ def qNumb(afterComponent, address):
                     main.outPut = main.outPut + '0'
                     main.isAccepted = True
             if main.isA or main.isAA or main.isA1A:
-                main.outPut = main.outPut + '0'
                 if posBis != -1:
                     if 90 <= ord(afterComponentD[posBis+2]) <= 65:
                         main.outPut = main.outPut + "1"
