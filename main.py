@@ -233,116 +233,124 @@ def qNumb(afterComponent, address):
         s[1] = s[1]*(-1)
     posNumb1 = afterComponent.index(str(s[0]))
     posNum2 = afterComponent.index(str(s[1]))
-    if len(s) == 2:
-        # print("pos", afterComponent[posNumb1], "pos2", afterComponent[posNum2+1])
-        if afterComponent[posNum2] == "-":
-            posNum2 = posNum2 + 1
-        afterBetweenNumbs = afterComponent[posNumb1:posNum2]
-        posNextComponent = whatComponentIsNext(afterBetweenNumbs)
-        posNextComponent = posNextComponent.split()
-        for i in main.arrayRoadTypes:
-            if len(posNextComponent) > 1 and posNextComponent[2] == i:
-                main.conditionAfterNumber = True
-                break
-        if re.search(patternDecimal, afterComponentAux):
-            posNumbs = formatRefexRes(re.search(patternDecimal, afterComponentAux))
-            posStart = int(posNumbs[1]) + zerosAmount(afterComponent) + 2
-            afterComponent = afterComponent[posStart: len(afterComponent)]
-            if len(posNextComponent) > 1 and posNextComponent[2] == main.bis:
-                main.outPut = main.outPut + '0'
-            if len(afterComponent) == 0:
-                main.outPut = main.outPut + '0'
-                main.isAccepted = True
-            else:
-                isCardinalValidate(afterComponent)
-                complement(afterComponent)
-                if main.isCardinal:
-                    val = str(re.search(main.patternCardinal, afterComponent).span()).replace("(", "")
-                    val = val.replace(")", "")
-                    val = val.replace(",", "")
-                    val = val.split()
-                    afterComponent = afterComponent[int(val[1]):len(afterComponent)]
-                    if len(afterComponent) > 0:
-                        if main.isComplement:
-                            main.outPut = main.outPut + '00'
-                            main.isAccepted = True
-                    else:
-                        main.outPut = main.outPut + '0'
-                        main.isAccepted = True
-                if main.isComplement:
-                    main.outPut = main.outPut + '0'
-                    main.isAccepted = True
-
-
-        else:
-            main.patternA = "(([A-Z]){1})"
-            main.patternB = "([A-Z]){1}(\s|\-){1}([A-Z]){1}"
-            main.patternC = "([A-Z]){1}(\s|\-){1}(\d)(\s|\-){1}([A-Z]){1}"
-            re.compile(main.patternA), re.compile(main.patternB), re.compile(main.patternC)
+    isCardinalValidate(afterComponent[posNumb1:posNum2])
+    if not main.isCardinal:
+        if len(s) == 2:
+            # print("pos", afterComponent[posNumb1], "pos2", afterComponent[posNum2+1])
             if afterComponent[posNum2] == "-":
                 posNum2 = posNum2 + 1
-            afterComponentD = afterComponent[posNumb1:posNum2]
-            posBis = afterComponentD.find(main.bis)
-            afterComponentD = afterComponentD.replace(" ", "")
-            qAfterBistoNumOrTypeR(afterComponent)
-            if afterBetweenNumbs.find(main.bis) != -1:
-                if 90 <= ord(afterComponentD[posBis]) <= 65:
-                    main.outPut = main.outPut + "1"
-                    main.isAccepted = False
-                else:
+            afterBetweenNumbs = afterComponent[posNumb1:posNum2]
+            posNextComponent = whatComponentIsNext(afterBetweenNumbs)
+            posNextComponent = posNextComponent.split()
+            for i in main.arrayRoadTypes:
+                if len(posNextComponent) > 1 and posNextComponent[2] == i:
+                    main.conditionAfterNumber = True
+                    break
+            if re.search(patternDecimal, afterComponentAux):
+                posNumbs = formatRefexRes(re.search(patternDecimal, afterComponentAux))
+                posStart = int(posNumbs[1]) + zerosAmount(afterComponent) + 2
+                afterComponent = afterComponent[posStart: len(afterComponent)]
+                if len(posNextComponent) > 1 and posNextComponent[2] == main.bis:
+                    main.outPut = main.outPut + '0'
+                if len(afterComponent) == 0:
                     main.outPut = main.outPut + '0'
                     main.isAccepted = True
-            if main.isA or main.isAA or main.isA1A and not main.conditionAfterNumber:
-                if posBis != -1:
-                    if 90 <= ord(afterComponentD[posBis+2]) <= 65:
+                else:
+                    isCardinalValidate(afterComponent)
+                    complement(afterComponent)
+                    if main.isCardinal:
+                        val = str(re.search(main.patternCardinal, afterComponent).span()).replace("(", "")
+                        val = val.replace(")", "")
+                        val = val.replace(",", "")
+                        val = val.split()
+                        afterComponent = afterComponent[int(val[1]):len(afterComponent)]
+                        if len(afterComponent) > 0:
+                            if main.isComplement:
+                                main.outPut = main.outPut + '00'
+                                main.isAccepted = True
+                        else:
+                            main.outPut = main.outPut + '0'
+                            main.isAccepted = True
+                    if main.isComplement:
+                        main.outPut = main.outPut + '0'
+                        main.isAccepted = True
+
+
+            else:
+                main.patternA = "(([A-Z]){1})"
+                main.patternB = "([A-Z]){1}(\s|\-){1}([A-Z]){1}"
+                main.patternC = "([A-Z]){1}(\s|\-){1}(\d)(\s|\-){1}([A-Z]){1}"
+                re.compile(main.patternA), re.compile(main.patternB), re.compile(main.patternC)
+                if afterComponent[posNum2] == "-":
+                    posNum2 = posNum2 + 1
+                afterComponentD = afterComponent[posNumb1:posNum2]
+                posBis = afterComponentD.find(main.bis)
+                afterComponentD = afterComponentD.replace(" ", "")
+                qAfterBistoNumOrTypeR(afterComponent)
+                isCardinalValidate(afterComponent)
+                if afterBetweenNumbs.find(main.bis) != -1:
+                    if 90 <= ord(afterComponentD[posBis]) <= 65:
                         main.outPut = main.outPut + "1"
-                        main.isA = False
-                        main.isAA = False
-                        main.isA1A = False
                         main.isAccepted = False
                     else:
                         main.outPut = main.outPut + '0'
+                        main.isAccepted = True
+                if main.isA or main.isAA or main.isA1A and not main.conditionAfterNumber:
+                    if posBis != -1:
+                        if 90 <= ord(afterComponentD[posBis + 2]) <= 65:
+                            main.outPut = main.outPut + "1"
+                            main.isA = False
+                            main.isAA = False
+                            main.isA1A = False
+                            main.isAccepted = False
+                        else:
+                            main.outPut = main.outPut + '0'
+                            main.isA = False
+                            main.isAA = False
+                            main.isA1A = False
+                            main.isAccepted = True
+                    else:
+                        main.outPut = main.outPut + '0'
                         main.isA = False
                         main.isAA = False
                         main.isA1A = False
                         main.isAccepted = True
                 else:
-                    main.outPut = main.outPut + '0'
-                    main.isA = False
-                    main.isAA = False
-                    main.isA1A = False
-                    main.isAccepted = True
-            else:
-                if main.conditionAfterNumber:
-                    main.outPut = main.outPut + '1'
-                    main.isAccepted = False
-                    main.conditionAfterNumber = False
-                    print("Dirección no valida")
-                    print(main.outPut)
-                if afterBetweenNumbs.find(main.bis) != -1:
-                    main.outPut = main.outPut + '0'
-                    main.isAccepted = True
-    else:
-        indexSecondNumb = afterComponent.index(str(s[1]))
-        indexThirdNumb = afterComponent.index(str(s[2]))
-        if indexThirdNumb > indexSecondNumb:
-            afterComponent = afterComponent[indexSecondNumb:len(afterComponent)]
-            if re.search('|'.join(main.arrayComplement), afterComponent):
-                val = str(re.search('|'.join(main.arrayComplement), afterComponent).span())
-                val = val.replace("(", "")
-                val = val.replace(")", "")
-                val = val.replace(",", "")
-                val = val.split()
-                if indexThirdNumb > int(val[1]):
-                    main.outPut = main.outPut + '0'
-                    main.isAccepted = True
-                else:
-                    main.outPut = main.outPut + '1'
-                    main.isAccepted = False
+                    if main.conditionAfterNumber:
+                        main.outPut = main.outPut + '1'
+                        main.isAccepted = False
+                        main.conditionAfterNumber = False
+                        print("Dirección no valida")
+                        print(main.outPut)
+                    if afterBetweenNumbs.find(main.bis) != -1:
+                        main.outPut = main.outPut + '0'
+                        main.isAccepted = True
         else:
-            main.isAccepted = False
-            main.outPut = main.outPut + '1'
-
+            indexSecondNumb = afterComponent.index(str(s[1]))
+            indexThirdNumb = afterComponent.index(str(s[2]))
+            if indexThirdNumb > indexSecondNumb:
+                afterComponent = afterComponent[indexSecondNumb:len(afterComponent)]
+                if re.search('|'.join(main.arrayComplement), afterComponent):
+                    val = str(re.search('|'.join(main.arrayComplement), afterComponent).span())
+                    val = val.replace("(", "")
+                    val = val.replace(")", "")
+                    val = val.replace(",", "")
+                    val = val.split()
+                    if indexThirdNumb > int(val[1]):
+                        main.outPut = main.outPut + '0'
+                        main.isAccepted = True
+                    else:
+                        main.outPut = main.outPut + '1'
+                        main.isAccepted = False
+            else:
+                main.isAccepted = False
+                main.outPut = main.outPut + '1'
+    else:
+        main.outPut = main.outPut + '1'
+        main.isAccepted = False
+        main.isCardinal = False
+        print(main.outPut)
+        print("Cadena no valida")
 
 
 def qvalidateAfterBis(afterComponent, address):
@@ -461,7 +469,9 @@ def validateTypeOfRoad(address):
         main.outPut = '0'
         q10(address, len(direc))
     else:
-        sys.exit(1)
+        main.outPut = main.outPut + '1'
+        print("Cadena no valida q10")
+        print(main.outPut)
 
 
 def traverseString(arrayAddresses):
