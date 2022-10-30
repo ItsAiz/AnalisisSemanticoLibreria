@@ -67,24 +67,35 @@ def whatComponentIsNext(address):
                 break
             else:
                 break
-    if posBis1 != -1 and posNumb != -1 and posBis1 < posNumb:
-        res = str(posBis1) + " " + str(len(bis) + posBis1) + " " + bis
-        return res
-    elif posBis1 != -1 and posNumb != -1 and posBis1 > posNumb:
-        res = str(posNumb) + " " + str(len(strComp) + posNumb) + " " + strComp
-        return res
-    elif posBis1 == -1 and posNumb != -1:
-        res = str(posNumb) + " " + str(len(strComp) + posNumb) + " " + strComp
-        return res
-    elif posBis1 != -1 and posNumb == -1:
-        res = str(posBis1) + " " + str(len(bis) + posBis1) + " " + bis
-        return res
-    elif posBis1 == -1 and posNumb == -1 and posTypeRoad != -1:
-        res = str(posTypeRoad) + " " + str(len(strTypeR) + posTypeRoad) + " " + strTypeR
-        return res
+    if not re.search("|".join(main.arrayRoadTypes), address[posTypeRoad+len(strTypeR):len(address)]) and not re.search("|".join(main.arrayNumeralV), address[posTypeRoad+len(strTypeR):len(address)]):
+        if posBis1 != -1 and posNumb != -1 and posBis1 < posNumb:
+            res = str(posBis1) + " " + str(len(bis) + posBis1) + " " + bis
+            return res
+        elif posBis1 != -1 and posNumb != -1 and posBis1 > posNumb:
+            res = str(posNumb) + " " + str(len(strComp) + posNumb) + " " + strComp
+            return res
+        elif posBis1 == -1 and posNumb != -1:
+            res = str(posNumb) + " " + str(len(strComp) + posNumb) + " " + strComp
+            return res
+        elif posBis1 != -1 and posNumb == -1 and posTypeRoad == -1:
+            res = str(posBis1) + " " + str(len(bis) + posBis1) + " " + bis
+            return res
+        elif posBis1 == -1 and posNumb == -1 and posTypeRoad != -1:
+            res = str(posTypeRoad) + " " + str(len(strTypeR) + posTypeRoad) + " " + strTypeR
+            return res
+        elif posBis1 != -1 and posTypeRoad != -1 and posTypeRoad < posBis1:
+            res = str(posTypeRoad) + " " + str(len(strTypeR) + posTypeRoad) + " " + strTypeR
+            return res
+        elif posBis1 != -1 and posTypeRoad != -1 and posTypeRoad > posBis1:
+            res = str(posBis1) + " " + str(len(bis) + posBis1) + " " + bis
+            return res
+        else:
+            res = res + '-1'
+            return res
     else:
         res = res + '-1'
         return res
+
 
 
 def isCardinalValidate(address):
@@ -401,7 +412,9 @@ def q10(address, pos):
         address2 = address2[1:len(address)] if address2[0] == ' ' else address2[0:len(address)]
         posNextComponent = whatComponentIsNext(address2)
         if len(posNextComponent) == 2:
-            less1 = int(posNextComponent)
+            main.outPut = main.outPut + '1'
+            print("Cadena no valida q10")
+            print(main.outPut)
         else:
             arrayLimits = posNextComponent.split()
             if arrayLimits[0] == arrayLimits[1]:
