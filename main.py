@@ -25,6 +25,7 @@ patternC = "(([A-Z]){1}(\s|\-){1}(\d)(\s|\-){1}([A-Z]){1})$"
 patternCardinal = "(NORTE)|(SUR)|(ESTE)|(OESTE)"
 patternDecimal = "^((\d*)(\s|-)(\d*))"
 outPut = ''
+conditionAfterNumber = False
 isA = False
 isAA = False
 isA1A = False
@@ -223,6 +224,10 @@ def qNumb(afterComponent, address):
         afterBetweenNumbs = afterComponent[posNumb1:posNum2]
         posNextComponent = whatComponentIsNext(afterBetweenNumbs)
         posNextComponent = posNextComponent.split()
+        for i in main.arrayRoadTypes:
+            if len(posNextComponent) > 1 and posNextComponent[2] == i:
+                main.conditionAfterNumber = True
+                break
         if re.search(patternDecimal, afterComponentAux):
             posNumbs = formatRefexRes(re.search(patternDecimal, afterComponentAux))
             posStart = int(posNumbs[1]) + zerosAmount(afterComponent) + 2
@@ -271,7 +276,7 @@ def qNumb(afterComponent, address):
                 else:
                     main.outPut = main.outPut + '0'
                     main.isAccepted = True
-            if main.isA or main.isAA or main.isA1A:
+            if main.isA or main.isAA or main.isA1A and not main.conditionAfterNumber:
                 if posBis != -1:
                     if 90 <= ord(afterComponentD[posBis+2]) <= 65:
                         main.outPut = main.outPut + "1"
@@ -292,7 +297,13 @@ def qNumb(afterComponent, address):
                     main.isA1A = False
                     main.isAccepted = True
             else:
-                if afterBetweenNumbs.find(main.bis) !=-1 :
+                if main.conditionAfterNumber:
+                    main.outPut = main.outPut + '1'
+                    main.isAccepted = False
+                    main.conditionAfterNumber = False
+                    print("Dirección no valida")
+                    print(main.outPut)
+                if afterBetweenNumbs.find(main.bis) != -1:
                     main.outPut = main.outPut + '0'
                     main.isAccepted = True
     else:
