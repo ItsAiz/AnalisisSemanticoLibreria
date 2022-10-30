@@ -457,7 +457,6 @@ def q10(address, pos):
 
 
 def vereda(address, pos, direcV):
-    print(address)
     try:
         if direcV == "VIA" or direcV == "VI" or direcV == "KM" or direcV == "KILOMETRO" or direcV == "VARIANTE" or direcV == "VT":
             afterRoad = address[len(direcV):len(address)]
@@ -511,6 +510,29 @@ def vereda(address, pos, direcV):
                             main.isComplement = False
                             print(main.outPut)
                             print("Direccion rural incorrecta")
+        else:
+            if re.search("|".join(main.arrayComplementVer), address):
+                val = str(re.search("|".join(main.arrayComplementVer), address).span())
+                val = val.replace("(", "")
+                val = val.replace(")", "")
+                val = val.replace(",", "")
+                val = val.split()
+                afterComplement = address[int(val[1]):len(address)]
+                if re.search("(\w)", afterComplement):
+                    main.outPut = main.outPut + '00'
+                    main.isComplement = False
+                    print(main.outPut)
+                    print("Direccion rural correcta")
+                else:
+                    main.outPut = main.outPut + '1'
+                    main.isComplement = False
+                    print(main.outPut)
+                    print("Direccion rural incorrecta")
+            else:
+                main.outPut = main.outPut + '1'
+                main.isComplement = False
+                print(main.outPut)
+                print("Direccion rural incorrecta")
 
     except:
         main.outPut = main.outPut + '1'
@@ -520,6 +542,7 @@ def vereda(address, pos, direcV):
 
 
 def validateTypeOfRoad(address):
+    print(address)
     main.ADDRESS = address
     main.arrayRoadTypes = sorted(main.arrayRoadTypes, key=len, reverse=True)
     main.arrayComplement = sorted(main.arrayComplement, key=len, reverse=True)
@@ -550,9 +573,14 @@ def validateTypeOfRoad(address):
             main.outPut = '0'
             q10(address, len(direc))
     else:
-        main.outPut = main.outPut + '1'
-        print("Cadena no valida q10")
-        print(main.outPut)
+        if len(direcV) > 1:
+            main.outPut = '0'
+            vereda(address[len(direcV):len(address)], len(direcV), direcV)
+        else:
+            main.outPut = main.outPut + '1'
+            print("Cadena no valida q10")
+            print(main.outPut)
+
 
 
 def traverseString(arrayAddresses):
