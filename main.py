@@ -458,31 +458,65 @@ def q10(address, pos):
 
 def vereda(address, pos, direcV):
     print(address)
-    if direcV == "VIA" or direcV == "VI" or direcV == "KM" or direcV == "KILOMETRO" or direcV == "VARIANTE" or direcV == "VT":
-        afterRoad = address[len(direcV):len(address)]
-        if afterRoad[0] == " ":
-            afterRoad = afterRoad[1:len(afterRoad)]
-            s = [int(s) for s in re.findall(r'-?\d+\.?\d*', afterRoad)]
-        if len(s) >= 1:
-            posFirstNumber = afterRoad.index(str(s[0]))
-            posSecondNumber = s[1] if len(s) >= 2 else None
-            if posSecondNumber is not None:
-                complement(afterRoad[posFirstNumber:posSecondNumber])
-                if main.isComplement:
-                    val = str(re.search("|".join(main.arrayComplementVer), afterRoad[posFirstNumber:posSecondNumber]).span())
-                    val = val.replace("(", "")
-                    val = val.replace(")", "")
-                    val = val.replace(",", "")
-                    val = val.split()
-                    if re.search("(\w)", afterRoad[int(val[1]):posSecondNumber]):
-                        main.outPut = main.outPut + '00'
+    try:
+        if direcV == "VIA" or direcV == "VI" or direcV == "KM" or direcV == "KILOMETRO" or direcV == "VARIANTE" or direcV == "VT":
+            afterRoad = address[len(direcV):len(address)]
+            if afterRoad[0] == " ":
+                afterRoad = afterRoad[1:len(afterRoad)]
+                s = [int(s) for s in re.findall(r'-?\d+\.?\d*', afterRoad)]
+            if len(s) >= 1:
+                posFirstNumber = afterRoad.index(str(s[0]))
+                posSecondNumber = s[1] if len(s) >= 2 else None
+                if posSecondNumber is not None:
+                    complement(afterRoad[posFirstNumber:posSecondNumber])
+                    if main.isComplement:
+                        val = str(re.search("|".join(main.arrayComplementVer),
+                                            afterRoad[posFirstNumber:posSecondNumber]).span())
+                        val = val.replace("(", "")
+                        val = val.replace(")", "")
+                        val = val.replace(",", "")
+                        val = val.split()
+                        if re.search("(\w)", afterRoad[int(val[1]):posSecondNumber]):
+                            main.outPut = main.outPut + '00'
+                            main.isComplement = False
+                            print(main.outPut)
+                            print("Direccion rural correcta")
+                        else:
+                            main.outPut = main.outPut + '1'
+                            main.isComplement = False
+                            print(main.outPut)
+                            print("Direccion rural incorrecta")
+                    else:
+                        main.outPut = main.outPut + '1'
                         main.isComplement = False
                         print(main.outPut)
-                        print("Direccion rural correcta")
+                        print("Direccion rural incorrecta")
+                else:
+                    complement(afterRoad)
+                    if main.isComplement:
+                        val = str(
+                            re.search("|".join(main.arrayComplementVer),
+                                      afterRoad[posFirstNumber:posSecondNumber]).span())
+                        val = val.replace("(", "")
+                        val = val.replace(")", "")
+                        val = val.replace(",", "")
+                        val = val.split()
+                        if re.search("(\w)", afterRoad[int(val[1]):posSecondNumber]):
+                            main.outPut = main.outPut + '00'
+                            main.isComplement = False
+                            print(main.outPut)
+                            print("Direccion rural correcta")
+                        else:
+                            main.outPut = main.outPut + '1'
+                            main.isComplement = False
+                            print(main.outPut)
+                            print("Direccion rural incorrecta")
 
-            else:
-                complement(afterRoad)
-
+    except:
+        main.outPut = main.outPut + '1'
+        main.isComplement = False
+        print(main.outPut)
+        print("Direccion rural incorrecta")
 
 
 def validateTypeOfRoad(address):
