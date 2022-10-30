@@ -3,6 +3,14 @@ import sys
 
 import main
 
+arrayTypeOfStartVer = ['CORREGIMIENTO', 'CARRETERA', 'KILOMETRO',
+                 'MUNICIPIO',	'HACIENDA',	'VARIANTE',	'ENTRADA',
+                 'CAMINO',	'BARRIO',	'PREDIO',	'SECTOR',	'VEREDA',
+                 'FINCA',	'CARR',	'CASA',	'CORR',	'LOTE',	'BRR',	'FCA',
+                 'MCP',	'SEC',	'VTE',	'VDA',	'VRD',	'VIA',	'CN',	'CT',
+                 'CA',	'CS',	'BR',	'EN',	'FI',	'HC',	'KM',
+                 'PD',	'LT',	'SC',	'VT',	'VI']
+
 arrayRoadTypes = ['CARRERA', 'CRA', 'KRA', 'KR', 'CR', 'CALLE', 'CLL', 'CL', 'CT', 'CARRETERA', 'CQ', 'CIRCULAR', 'CIR',
                   'CV', 'CIRCUNVALAR', 'CRV', 'CC', 'CUENTASCORRIDAS', 'AU', 'AUT', 'AUTOPISTA', 'AV', 'AVENIDA', 'AC',
                   'AVENIDACALLE', 'AVENIDACLL', 'AVENIDAC', 'AVENIDACL', 'AVCALLE', 'AVCALLE', 'AVCLL', 'AVCL', 'AK',
@@ -160,7 +168,6 @@ def qBeforeBisNum(beforeComponent):
             main.outPut = main.outPut + '1'
             print(main.outPut)
             print("Cadena no valida")
-            sys.exit(1)
     elif re.search(main.patternA, beforeComponent):
         val = str(re.search(main.patternA, beforeComponent).span()).replace("(", "")
         val = val.replace(")", "")
@@ -179,7 +186,6 @@ def qBeforeBisNum(beforeComponent):
                 main.outPut = main.outPut + '1'
                 print(main.outPut)
                 print("Cadena no valida")
-                sys.exit(1)
     else:
         if re.search("(\\d|\w)", beforeComponent):
             main.isAlphanumeric = True
@@ -189,7 +195,6 @@ def qBeforeBisNum(beforeComponent):
             main.outPut = main.outPut + '1'
             print(main.outPut)
             print("Cadena no valida beforeBis")
-            sys.exit(1)
 
 
 def zerosAmount(val):
@@ -307,8 +312,26 @@ def qNumb(afterComponent, address):
                     main.outPut = main.outPut + '0'
                     main.isAccepted = True
     else:
-        main.isAccepted = False
-        main.outPut = main.outPut + '1'
+        indexSecondNumb = afterComponent.index(str(s[1]))
+        indexThirdNumb = afterComponent.index(str(s[2]))
+        if indexThirdNumb > indexSecondNumb:
+            afterComponent = afterComponent[indexSecondNumb:len(afterComponent)]
+            if re.search('|'.join(main.arrayComplement), afterComponent):
+                val = str(re.search('|'.join(main.arrayComplement), afterComponent).span())
+                val = val.replace("(", "")
+                val = val.replace(")", "")
+                val = val.replace(",", "")
+                val = val.split()
+                if indexThirdNumb > int(val[1]):
+                    main.outPut = main.outPut + '0'
+                    main.isAccepted = True
+                else:
+                    main.outPut = main.outPut + '1'
+                    main.isAccepted = False
+        else:
+            main.isAccepted = False
+            main.outPut = main.outPut + '1'
+
 
 
 def qvalidateAfterBis(afterComponent, address):
@@ -337,7 +360,6 @@ def qvalidateAfterBis(afterComponent, address):
         main.outPut = main.outPut + '1'
         print(main.outPut)
         print("Cadena no valida afterbis")
-        sys.exit(1)
 
 
 def qbis(beforeComponent, afterComponent, address2):
@@ -366,7 +388,6 @@ def qbis(beforeComponent, afterComponent, address2):
         main.outPut = main.outPut + '1'
         print(main.outPut)
         print("Cadena no valida bis")
-        sys.exit(1)
 
 
 def q10(address, pos):
@@ -381,7 +402,6 @@ def q10(address, pos):
         posNextComponent = whatComponentIsNext(address2)
         if len(posNextComponent) == 2:
             less1 = int(posNextComponent)
-            sys.exit(1)
         else:
             arrayLimits = posNextComponent.split()
             if arrayLimits[0] == arrayLimits[1]:
@@ -409,7 +429,6 @@ def q10(address, pos):
             main.outPut = main.outPut + '1'
             print("Cadena no valida q10")
             print(main.outPut)
-            sys.exit(1)
 
 
 
@@ -439,7 +458,7 @@ def traverseString(arrayAddresses):
 
 def run():
     pattern = r'\s+'
-    fileName = 'DIRECCIONES.txt'
+    fileName = 'Ejemplos_direcciones.txt'
     arrayAddresses = []
     with open(fileName, encoding="utf8") as file_object:
         while True:
