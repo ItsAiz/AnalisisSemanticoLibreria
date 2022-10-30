@@ -6,7 +6,7 @@ import main
 arrayTypeOfStartVer = ['CORREGIMIENTO', 'CARRETERA', 'KILOMETRO',
                  'MUNICIPIO',	'HACIENDA',	'VARIANTE',	'ENTRADA',
                  'CAMINO',	'BARRIO',	'PREDIO',	'SECTOR',	'VEREDA',
-                 'FINCA', 'VIA',	'CARR',	'CASA',	'CORR',	'LOTE',	'BRR',	'FCA',
+                 'FINCA', 'VIA',	'CARR',	'CASA',	'CORR',	'LOTE',	'BRR',	'FCA', 'KR',
                  'MCP',	'SEC',	'VTE',	'VDA',	'VRD',	'VIA',	'CN',	'CT',
                  'CA',	'CS',	'BR',	'EN',	'FI',	'HC',	'KM',
                  'PD',	'LT',	'SC',	'VT',	'VI']
@@ -458,7 +458,7 @@ def q10(address, pos):
 
 def vereda(address, pos, direcV):
     try:
-        if direcV == "VIA" or direcV == "VI" or direcV == "KM" or direcV == "KILOMETRO" or direcV == "VARIANTE" or direcV == "VT":
+        if direcV == "VIA" or direcV == "VI" or direcV == "KM" or direcV == "KILOMETRO" or direcV == "VARIANTE" or direcV == "VT" or direcV == "CARRETERA" or direcV == "CARR" or direcV == "KR":
             afterRoad = address[len(direcV):len(address)]
             if afterRoad[0] == " ":
                 afterRoad = afterRoad[1:len(afterRoad)]
