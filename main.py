@@ -6,7 +6,7 @@ import main
 arrayTypeOfStartVer = ['CORREGIMIENTO', 'CARRETERA', 'KILOMETRO',
                  'MUNICIPIO',	'HACIENDA',	'VARIANTE',	'ENTRADA',
                  'CAMINO',	'BARRIO',	'PREDIO',	'SECTOR',	'VEREDA',
-                 'FINCA',	'CARR',	'CASA',	'CORR',	'LOTE',	'BRR',	'FCA',
+                 'FINCA', 'VIA',	'CARR',	'CASA',	'CORR',	'LOTE',	'BRR',	'FCA',
                  'MCP',	'SEC',	'VTE',	'VDA',	'VRD',	'VIA',	'CN',	'CT',
                  'CA',	'CS',	'BR',	'EN',	'FI',	'HC',	'KM',
                  'PD',	'LT',	'SC',	'VT',	'VI']
@@ -452,6 +452,11 @@ def q10(address, pos):
             print(main.outPut)
 
 
+def vereda(address, pos, direcV):
+    print(address, "pos", pos, "start", direcV)
+    if direcV == "VIA" or direcV == "VI" or direcV == "KM" or direcV == "KILOMETRO" or direcV == "VARIANTE" or direcV == "VT":
+        print("si")
+
 
 def validateTypeOfRoad(address):
     main.ADDRESS = address
@@ -460,14 +465,28 @@ def validateTypeOfRoad(address):
     pattern = r'\s+'
     addressPiv = re.sub(pattern, '', address)
     direc = ""
+    direcV = ""
     for i in main.arrayRoadTypes:
         if address.startswith(i) or addressPiv.startswith(i):
             direc += i
             break
-
+    if re.search('|'.join(main.arrayTypeOfStartVer), address) or re.search('|'.join(main.arrayTypeOfStartVer), direc):
+        for i in main.arrayTypeOfStartVer:
+            if address.startswith(i) or addressPiv.startswith(i):
+                direcV = i
+                break
     if len(direc) > 1:
-        main.outPut = '0'
-        q10(address, len(direc))
+        if len(direcV) > 1:
+            main.outPut = '0'
+            pos = whatComponentIsNext(address[len(direcV):len(address)])
+            if pos == '-1':
+                vereda(address, len(direcV), direcV)
+            else:
+                main.outPut = '0'
+                q10(address, len(direc))
+        else:
+            main.outPut = '0'
+            q10(address, len(direc))
     else:
         main.outPut = main.outPut + '1'
         print("Cadena no valida q10")
