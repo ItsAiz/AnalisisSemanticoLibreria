@@ -1,0 +1,17 @@
+Metadata-Version: 2.1
+Name: ValidatePhysicalAddressesColombia
+Version: 0.0.12
+Summary: Librería para leer direcciones fisicas Colombianas desde un txt y validar si son correctas o no
+Home-page: https://github.com/ItsAiz/Analizador-Sem-ntico-Direcciones-rurales-y-urbanas-Colombia.git
+Author: Felipe Duenas, Ivan Sierra
+Author-email: andres.sierra03@uptc.edu.co
+License: UPTC
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
+
+Welcome to this library about semantic analysis of Colombian physical Address!!
+- Requirements:
+    We needed to install re of regex library
+    
+
+
